@@ -3,6 +3,8 @@
   "block.jamesmod.ctrlaltcode_block": "CtrlAltCode Block",
   "item.jamesmod.ctrlaltcode_sword": "CtrlAltCode Sword",
   "item.jamesmod.ctrlaltcode_food": "CtrlAltCode Food",
+  "entity.jamesmod.poison_frog": "Poison Frog",
+  "item.jamesmod.poison_frog_spawn_egg": "Poison Frog Spawn Egg",
 
   "jamesmod.configuration.title": "james_mod Configs",
   "jamesmod.configuration.section.jamesmod.common.toml": "james_mod Configs",

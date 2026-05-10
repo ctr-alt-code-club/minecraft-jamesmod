@@ -7,11 +7,14 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
@@ -28,6 +31,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -47,6 +51,8 @@ public class jamesmod {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "jamesmod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    // Create a Deferred Register to hold EntityTypes which will all be registered under the "jamesmod" namespace
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
 
     // Creates a new custom CtrlAltCode Block with the id "jamesmod:ctrlaltcode_block"
     public static final DeferredBlock<Block> CTRLALTCODE_BLOCK = BLOCKS.registerSimpleBlock("ctrlaltcode_block",
@@ -74,6 +80,18 @@ public class jamesmod {
                     .alwaysEdible()  // Can eat even when full
                     .build())));
 
+    // Creates a new PoisonFrog entity with the id "jamesmod:poison_frog"
+    // A hostile jumping mob that applies poison on attack
+    public static final DeferredHolder<EntityType<?>, EntityType<PoisonFrog>> POISON_FROG = ENTITY_TYPES.register("poison_frog",
+            () -> EntityType.Builder.of(PoisonFrog::new, MobCategory.MONSTER)
+                .sized(0.7f, 0.7f)  // Width and height (similar to frog size)
+                .clientTrackingRange(8)  // How far away clients can see the entity
+                .build("poison_frog"));
+
+    // Creates a spawn egg for the PoisonFrog with the id "jamesmod:poison_frog_spawn_egg"
+    public static final DeferredItem<SpawnEggItem> POISON_FROG_SPAWN_EGG = ITEMS.register("poison_frog_spawn_egg",
+            () -> new SpawnEggItem(POISON_FROG.get(), 0x2D5016, 0x7CFC00, new Item.Properties()));
+
     // Creates a custom CtrlAltCode creative tab with the id "jamesmod:ctrlaltcode_tab"
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CTRLALTCODE_TAB = CREATIVE_MODE_TABS.register("ctrlaltcode_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.jamesmod.ctrlaltcode")) // The language key for the title
@@ -84,8 +102,7 @@ public class jamesmod {
                 output.accept(CTRLALTCODE_BLOCK_ITEM.get());
                 output.accept(CTRLALTCODE_SWORD.get());
                 output.accept(CTRLALTCODE_FOOD.get());
-                // You can add more items here as you create them
-                // output.accept(YOUR_NEXT_ITEM.get());
+                output.accept(POISON_FROG_SPAWN_EGG.get());
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -93,6 +110,8 @@ public class jamesmod {
     public jamesmod(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        // Register entity attributes
+        modEventBus.addListener(this::registerEntityAttributes);
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
@@ -100,6 +119,8 @@ public class jamesmod {
         ITEMS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so entity types get registered
+        ENTITY_TYPES.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (jamesmod) to respond directly to events.
@@ -124,6 +145,11 @@ public class jamesmod {
         LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
 
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
+    }
+
+    // Register entity attributes for custom entities
+    private void registerEntityAttributes(EntityAttributeCreationEvent event) {
+        event.put(POISON_FROG.get(), PoisonFrog.createAttributes().build());
     }
 
     // Add the block items to the building blocks tab

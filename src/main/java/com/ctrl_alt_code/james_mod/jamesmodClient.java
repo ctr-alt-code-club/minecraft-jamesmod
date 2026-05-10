@@ -1,6 +1,7 @@
 package com.ctrl_alt_code.james_mod;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -27,5 +28,8 @@ public class jamesmodClient {
         // Some client setup code
         jamesmod.LOGGER.info("HELLO FROM CLIENT SETUP");
         jamesmod.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        
+        // Register entity renderer for PoisonFrog
+        EntityRenderers.register(jamesmod.POISON_FROG.get(), PoisonFrogRenderer::new);
     }
 }
