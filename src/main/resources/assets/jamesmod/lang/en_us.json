@@ -1,0 +1,15 @@
+{
+  "itemGroup.jamesmod": "Example Mod Tab",
+  "itemGroup.jamesmod.ctrlaltcode": "CtrlAltCode Tab",
+  "block.jamesmod.example_block": "Example Block",
+  "block.jamesmod.ctrlaltcode_block": "CtrlAltCode Block",
+  "item.jamesmod.example_item": "Example Item",
+
+  "jamesmod.configuration.title": "james_mod Configs",
+  "jamesmod.configuration.section.jamesmod.common.toml": "james_mod Configs",
+  "jamesmod.configuration.section.jamesmod.common.toml.title": "james_mod Configs",
+  "jamesmod.configuration.items": "Item List",
+  "jamesmod.configuration.logDirtBlock": "Log Dirt Block",
+  "jamesmod.configuration.magicNumberIntroduction": "Magic Number Text",
+  "jamesmod.configuration.magicNumber": "Magic Number"
+}

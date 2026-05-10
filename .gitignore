@@ -1,0 +1,32 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# IDEs and editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+hs_err_pid*
+replay_pid*
+
+# Logs
+logs/
+*.log
+*.log.gz
+
+# Minecraft / NeoForge runtime
+run/
+
+# Local environment files
+.env
+.env.*
