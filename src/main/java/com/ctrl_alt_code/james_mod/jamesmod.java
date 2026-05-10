@@ -12,6 +12,9 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -45,11 +48,6 @@ public class jamesmod {
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "jamesmod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Creates a new Block with the id "jamesmod:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "jamesmod:example_block", combining the namespace and path
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
     // Creates a new custom CtrlAltCode Block with the id "jamesmod:ctrlaltcode_block"
     public static final DeferredBlock<Block> CTRLALTCODE_BLOCK = BLOCKS.registerSimpleBlock("ctrlaltcode_block",
         BlockBehaviour.Properties.of()
@@ -59,18 +57,22 @@ public class jamesmod {
     // Creates a new BlockItem for the CtrlAltCode Block
     public static final DeferredItem<BlockItem> CTRLALTCODE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("ctrlaltcode_block", CTRLALTCODE_BLOCK);
 
-    // Creates a new food item with the id "jamesmod:example_id", nutrition 1 and saturation 2
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
-            .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
+    // Creates a new CtrlAltCode Sword with the id "jamesmod:ctrlaltcode_sword"
+    // Uses diamond tier stats: 7 attack damage (3 base + 4 from diamond tier), 1.6 attack speed
+    // Special ability: Launches enemies into the air when hit
+    public static final DeferredItem<SwordItem> CTRLALTCODE_SWORD = ITEMS.register("ctrlaltcode_sword",
+            () -> new LauncherSword(Tiers.WOOD,
+                new Item.Properties().attributes(SwordItem.createAttributes(Tiers.DIAMOND, 1, -2.4f))));
 
-    // Creates a creative tab with the id "jamesmod:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.jamesmod")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
+    // Creates a new CtrlAltCode Food with the id "jamesmod:ctrlaltcode_food"
+    // Special ability: Restores full health and makes player fly up for 10 seconds
+    public static final DeferredItem<Item> CTRLALTCODE_FOOD = ITEMS.register("ctrlaltcode_food",
+            () -> new LevitationFood(new Item.Properties()
+                .food(new FoodProperties.Builder()
+                    .nutrition(20)  // Full hunger bar
+                    .saturationModifier(1.0f)  // Good saturation
+                    .alwaysEdible()  // Can eat even when full
+                    .build())));
 
     // Creates a custom CtrlAltCode creative tab with the id "jamesmod:ctrlaltcode_tab"
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CTRLALTCODE_TAB = CREATIVE_MODE_TABS.register("ctrlaltcode_tab", () -> CreativeModeTab.builder()
@@ -80,6 +82,8 @@ public class jamesmod {
             .displayItems((parameters, output) -> {
                 // Add all your custom items/blocks to this tab
                 output.accept(CTRLALTCODE_BLOCK_ITEM.get());
+                output.accept(CTRLALTCODE_SWORD.get());
+                output.accept(CTRLALTCODE_FOOD.get());
                 // You can add more items here as you create them
                 // output.accept(YOUR_NEXT_ITEM.get());
             }).build());
@@ -122,10 +126,9 @@ public class jamesmod {
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
     }
 
-    // Add the example block item to the building blocks tab
+    // Add the block items to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(EXAMPLE_BLOCK_ITEM);
             event.accept(CTRLALTCODE_BLOCK_ITEM);
         }
     }

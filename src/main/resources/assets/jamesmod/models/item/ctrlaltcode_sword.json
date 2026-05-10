@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "jamesmod:item/ctrlaltcode_sword"
+  }
+}

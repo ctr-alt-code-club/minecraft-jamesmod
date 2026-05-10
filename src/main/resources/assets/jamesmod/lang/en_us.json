@@ -1,9 +1,8 @@
 {
-  "itemGroup.jamesmod": "Example Mod Tab",
   "itemGroup.jamesmod.ctrlaltcode": "CtrlAltCode Tab",
-  "block.jamesmod.example_block": "Example Block",
   "block.jamesmod.ctrlaltcode_block": "CtrlAltCode Block",
-  "item.jamesmod.example_item": "Example Item",
+  "item.jamesmod.ctrlaltcode_sword": "CtrlAltCode Sword",
+  "item.jamesmod.ctrlaltcode_food": "CtrlAltCode Food",
 
   "jamesmod.configuration.title": "james_mod Configs",
   "jamesmod.configuration.section.jamesmod.common.toml": "james_mod Configs",
